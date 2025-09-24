@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit: <%= page_id %></title>
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="/css/global.css">
+</head>
+<body>
+  <div class="mainContainer">
+    <%- include("partials/header") %>
+
+    <main class="content">
+      <h1>Editing <%= page_id %></h1>
+      <hr>
+      <form action="/<%= page_id %>/edit" method="post" class="edit-form">
+        <div class="tabBar">
+          <div class="tabGroup">
+            <button type="button" class="tabBtn active" data-tab="editor"><img src="/img/edit.svg" alt="" class="icon" draggable="false"> Edit</button>
+            <button type="button" class="tabBtn" data-tab="visual"><img src="/img/visual.svg" alt="" class="icon" draggable="false"> Visual</button>
+            <button type="button" class="tabBtn" data-tab="settings"><img src="/img/settings.svg" alt="" class="icon" draggable="false"> Settings</button>
+          </div>
+        </div>
+
+        <div class="tabContent" id="tab-editor">
+          <div class="editorToolbar">
+            <button type="button" data-insert="# " title="Heading 1">H1</button>
+            <button type="button" data-insert="## " title="Heading 2">H2</button>
+            <button type="button" data-insert="### " title="Heading 3">H3</button>
+            <div class="vertical-rule"></div>
+            <button type="button" data-wrap="**" title="Bold"><b>B</b></button>
+            <button type="button" data-wrap="*" title="Italic"><i>I</i></button>
+            <div class="vertical-rule"></div>
+            <button type="button" data-insert="![alt text](image.jpg)" title="Image center">&lt;&gt;</button>
+            <button type="button" data-insert="![alt text](image.jpg)" title="Image left">&lt;</button>
+            <button type="button" data-insert="![alt text](image.jpg)" title="Image right">&gt;</button>
+            <div class="vertical-rule"></div>
+            <button type="button" data-insert="---" title="HR">HR</button>
+          </div>
+          <label><textarea class="contentInput" id="editor" name="content" rows="14" required><%= content %></textarea></label>
+        </div>
+
+        <div class="tabContent hidden" id="tab-settings">
+          <div>
+            <h2 class="editTitle">Information</h2>
+            <label><p class="infoLabel">Title</p><input class="input" type="text" name="title" value="<%= title %>" required></label>
+            <label><p class="infoLabel">Category</p><input class="input" type="text" name="category" value="<%= category %>"></label>
+            <label><p class="infoLabel">Description</p><input class="input" type="text" name="description" value="<%= description %>" required></label>
+          </div>
+        </div>
+
+        <div class="submitBar">
+          <button type="submit" class="button">Publish changes</button>
+          <button class="button red" type="button" onclick="window.location.href='/<%= page_id %>'">Cancel</button>
+        </div>
+      </form>
+    </main>
+
+    <%- include("partials/footer") %>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll(".tabBtn");
+    const contents = document.querySelectorAll(".tabContent");
+    const textarea = document.getElementById("editor");
+    const visual = document.getElementById("visualPreview");
+
+function markdownToHtml(md) {
+  return md
+    .split('\n')
+    .map(line => {
+      line = line.trim();
+      if (!line) return null;
+      if (line.startsWith('### ')) return `<h3>${line.slice(4)}</h3>`;
+      if (line.startsWith('## ')) return `<h2>${line.slice(3)}</h2>`;
+      if (line.startsWith('# ')) return `<h1>${line.slice(2)}</h1>`;
+      if (line === '---') return `<hr>`;
+      
+      line = line.replace(/$$([^$$]+)\]$([^)]+)$/g, (match, text, link) => {
+        if (/^\w+$/.test(link)) {
+          return `<a href="/${link}">${text}</a>`;
+        }
+        return `<a href="${link}">${text}</a>`;
+      });
+
+      line = line
+        .replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>')
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+        .replace(/\*(.*?)\*/g, '<i>$1</i>');
+      
+      return `<p>${line}</p>`;
+    })
+    .filter(Boolean)
+    .join('');
+}
+
+    function updateVisualPreview() {
+      visual.innerHTML = markdownToHtml(textarea.value);
+    }
+
+    textarea.addEventListener("input", updateVisualPreview);
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        const target = tab.dataset.tab;
+        contents.forEach(c => {
+          c.classList.toggle("hidden", c.id !== `tab-${target}`);
+        });
+
+        if (target === "visual") {
+          updateVisualPreview(); 
+        }
+      });
+    });
+  </script>
+
+  <script>
+    document.querySelectorAll('.editorToolbar button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const textarea = document.getElementById('editor');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        let value = textarea.value;
+        const insert = btn.dataset.insert;
+        const wrap = btn.dataset.wrap;
+        const selected = value.slice(start, end);
+        const before = value.slice(0, start);
+        const after = value.slice(end);
+
+        if (insert === '---') {
+          const lines = value.split('\n');
+          const lineIndex = value.slice(0, start).split('\n').length - 1;
+          const currentLine = lines[lineIndex];
+
+          if (currentLine.trim() === '---') {
+            lines.splice(lineIndex, 1); 
+          } else if (currentLine.trim() === '') {
+            lines[lineIndex] = '---';
+          } else {
+            lines.splice(lineIndex + 1, 0, '---');
+          }
+
+          textarea.value = lines.join('\n');
+          textarea.selectionStart = textarea.selectionEnd = start;
+          textarea.focus();
+
+          if (document.querySelector('[data-tab="visual"].active')) {
+            visual.innerHTML = markdownToHtml(textarea.value);
+          }
+          return;
+        }
+
+        if (insert && insert.startsWith('#')) {
+          const lines = value.split('\n');
+          const lineIndex = value.slice(0, start).split('\n').length - 1;
+          let line = lines[lineIndex];
+
+          line = line.replace(/^(#{1,6} )/, '');
+
+          if (!lines[lineIndex].startsWith(insert)) {
+            line = insert + line;
+          }
+
+          lines[lineIndex] = line;
+          textarea.value = lines.join('\n');
+          textarea.focus();
+          textarea.selectionStart = textarea.selectionEnd = start;
+
+          if (document.querySelector('[data-tab="visual"].active')) {
+            visual.innerHTML = markdownToHtml(textarea.value);
+          }
+          return;
+        }
+
+        if (wrap) {
+          const wrapLen = wrap.length;
+          const fullText = textarea.value;
+
+          const beforeWrap = fullText.slice(start - wrapLen, start);
+          const afterWrap = fullText.slice(end, end + wrapLen);
+          const isWrapped = beforeWrap === wrap && afterWrap === wrap;
+
+          if (isWrapped) {
+            textarea.value =
+              fullText.slice(0, start - wrapLen) +
+              selected +
+              fullText.slice(end + wrapLen);
+            textarea.selectionStart = start - wrapLen;
+            textarea.selectionEnd = end - wrapLen;
+          } else {
+            textarea.value = before + wrap + selected + wrap + after;
+            textarea.selectionStart = start + wrapLen;
+            textarea.selectionEnd = end + wrapLen;
+          }
+
+          textarea.focus();
+
+          if (document.querySelector('[data-tab="visual"].active')) {
+            visual.innerHTML = markdownToHtml(textarea.value);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -14,7 +14,7 @@ function loadDB() {
   pages.clear();
 
   const rows = db
-    .prepare("SELECT page_id, category, names, title, description, content FROM pages")
+    .prepare("SELECT page_id, category, title, description, content FROM pages")
     .all();
 
   for (const row of rows) {

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="/css/global.css">
+  <meta name="description" content="Log in to your account." />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="mainContainer">
+        <%- include("partials/header") %>
+<main class="content">
+
+  <h1>Sign in</h1>
+  <hr>
+    <div class="loginContainer">
+
+  <% if (error) { %>
+    <p class="loginError"><%= error %></p>
+  <% } %>
+
+  <form method="post" action="/login" class="loginForm">
+    <label for="username" class="loginLabel">Username</label>
+    <input id="username" class="loginInput" type="text" name="username" required autocomplete="username">
+
+    <label for="password" class="loginLabel">Password</label>
+    <input id="password" class="loginInput" type="password" name="password" required autocomplete="current-password">
+
+    <button type="submit" class="loginButton">Log In</button>
+  </form>
+  </div>
+</main>
+        <%- include("partials/footer") %>
+    </div>
+</body>
+</html>

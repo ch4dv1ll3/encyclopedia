@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/table-of-contents.css">
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
+  <meta name="description" content="<%= description %>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/global.css">
+</head>
+<body>
+<div class="mainContainer">
+    <%- include('partials/header') %>
+    <div class="layout">
+        <main class="content">
+            <div class="page-title-container">
+                <button class="toc-toggle-btn header-button" aria-label="Toggle Table of Contents">
+                    <img src="/img/toc.svg" alt="menu" draggable="false"/>
+                </button>
+                <h1 class="pageTitle"><%= title %></h1> 
+            </div>
+
+            <div class="table-of-contents">
+                <ul id="toc" class="toc-dropdown"></ul>
+            </div>
+            
+            <hr />
+            <%- content %>
+        </main>
+    </div>
+    <%- include("partials/footer") %>
+ </div>
+</body>
+</html>

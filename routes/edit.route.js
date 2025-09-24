@@ -17,7 +17,6 @@ router.get("/:page_id/edit", (req, res) => {
     .prepare("SELECT * FROM pages WHERE page_id = ?")
     .get(req.params.page_id) || {
       title: "",
-      names: "",
       category: "",
       description: "",
       content: ""

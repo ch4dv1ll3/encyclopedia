@@ -1,0 +1,151 @@
+
+.edit-form {
+max-width: 100%;
+display: flex;
+flex-direction: column;
+}
+.edit-form label {
+display: flex;
+flex-direction: column;
+}
+.contentInput {
+display: flex;
+flex-direction: column;
+margin-bottom: var(--size1);
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+background-color: #fff;
+border-radius: 0;
+box-shadow: inset -1px -1px #fff,inset 1px 1px grey,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;
+box-sizing: border-box;
+padding: 12px 12px;
+font: inherit;
+outline: none;
+resize: vertical;
+height: max-content;
+line-height: 1.4;
+white-space: pre-wrap;
+min-height: 512px;
+}
+.contentInput::-webkit-scrollbar {
+width: 10px;
+height: 10px;
+}
+.contentInput::-webkit-scrollbar-track {
+background: none;
+}
+.contentInput::-webkit-scrollbar-thumb {
+background-color: var(--border1);
+border: 2px solid var(--color2);
+}
+.contentInput::-webkit-scrollbar-thumb:hover {
+background-color: var(--blue);
+}
+.tabBar {
+user-select: none;
+display: flex;
+gap: var(--size1);
+margin-bottom: var(--size1);
+}
+.tabBtn {
+height: 32px;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+padding: 4px 8px;
+font: inherit;
+border: 1px solid transparent;
+background: none;
+cursor: pointer;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+}
+.tabBtn .icon {
+width: auto;
+height: 16px;
+pointer-events: none;
+user-select: none;
+}
+.tabBtn:hover {
+border: 1px solid var(--border1);
+background-color: var(--color2);
+}
+.tabBtn.active {
+border: 1px solid var(--border1);
+background-color: var(--color4);
+}
+.tabGroup {
+gap: 2px;
+background-color: var(--color1);
+display: flex;
+}
+.editorToolbar {
+user-select: none;
+border-top: 1px solid var(--border1);
+border-right: 1px solid var(--border1);
+border-left: 1px solid var(--border1);
+padding: 2px;
+box-sizing: border-box;
+gap: 2px;
+background-color: var(--color3);
+width: 100%;
+display: flex;
+gap: 0.5rem;
+}
+.editorToolbar button {
+height: var(--size3);
+background: var(--color3);
+border: none;
+padding: 0.3rem 0.6rem;
+cursor: pointer;
+font: inherit;
+}
+.editorToolbar button img {
+width: 20px;
+height: 20px;
+pointer-events: none;
+}
+.editorToolbar button:hover {
+background: var(--color2);
+}
+.editorToolbar button:active {
+background: var(--color1);
+}
+.tabContent.hidden {
+display: none;
+}
+.editTitle {
+padding: var(--size1);
+background-color: var(--color2);
+border: 1px solid var(--border1);
+margin: 0;
+}
+.submitBar {
+margin-top: var(--size2);
+height: var(--size3);
+display: flex;
+gap: var(--size1);
+}
+.visualPreview {
+background: var(--color2);
+border: 1px solid var(--border1);
+padding: var(--size1);
+min-height: 240px;
+white-space: pre-wrap;
+}
+.visualPreview {
+display: flex;
+flex-direction: column;
+}
+.visualPreview > * {
+user-select: text;
+}
+.visualPreview p {
+margin: 0;
+}
+.visualPreview hr {
+border: none;
+border-top: 1px solid var(--border1);
+margin: 1em 0;
+}
